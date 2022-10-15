@@ -22,8 +22,9 @@ def get_files(infiles, file_types='*.json'):
 
 
 @click.group()
-@click.option('--config', type=click.Path(exists=True))
-@click.option('--define', type=click.Path(exists=True))
+@click.option('--config', type=click.Path(exists=True),
+              help="Path for configuration file specifying item group prefix and item prefix")
+@click.option('--define', type=click.Path(exists=True), help="Path for Define xml file")
 @click.pass_context
 def dataset_json(ctx, config=None, define=None):
     pdefine = ParseDefine(define) if define is not None else None
@@ -41,7 +42,6 @@ def dataset_json(ctx, config=None, define=None):
         study_oid = ""
         metadata_version_oid = ""
 
-
     ctx.ensure_object(dict)
     ctx.obj['item_group_prefix'] = item_group_prefix
     ctx.obj['item_prefix'] = item_prefix
@@ -50,12 +50,17 @@ def dataset_json(ctx, config=None, define=None):
     ctx.obj['define'] = pdefine
 
 
-
 @dataset_json.command()
-@click.argument('infiles', type=click.Path(exists=True))
+@click.argument('infiles', nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument('output_folder', type=click.Path(exists=True))
 @click.pass_context
-def to_csv(ctx, infiles, output_folder):
+def json_to_csv(ctx, infiles, output_folder):
+    """Converts Dataset JSON to CSV
+
+    \b
+    infiles       : Path for Dataset JSON files. These can be multiple files.
+    output_folder : Output folder for converted CSV files
+    """
     for f in get_files(infiles):
         click.echo(f'Processing {f}')
         dsjson = ReadDatasetJason(f, ctx.obj['item_group_prefix'])
@@ -69,7 +74,7 @@ def to_csv(ctx, infiles, output_folder):
 @click.argument('infiles', nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument('output_folder', type=click.Path(exists=True))
 @click.pass_context
-def to_xpt(ctx, infiles, output_folder):
+def json_to_xpt(ctx, infiles, output_folder):
     for f in get_files(infiles):
         click.echo(f'Processing {f}')
         dsjson = ReadDatasetJason(f, ctx.obj['item_group_prefix'])
@@ -84,7 +89,7 @@ def to_xpt(ctx, infiles, output_folder):
 @click.argument('infiles', nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument('output_folder', type=click.Path(exists=True))
 @click.pass_context
-def to_json(ctx, infiles, output_folder):
+def xpt_to_json(ctx, infiles, output_folder):
     for f in get_files(infiles):
         click.echo(f'Processing {f}')
         define = ctx.obj['define']
