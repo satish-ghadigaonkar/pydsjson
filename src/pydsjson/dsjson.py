@@ -25,8 +25,7 @@ class Column:
 class Dataset:
     __slots__ = ('oid', 'name', 'label', 'columns')
 
-    def __init__(self, ds_oid: str, ds_name: str, ds_label: str | None = None, ds_columns: list[Column] | None = None,
-                 item_group_prefix: str | None = 'IG'):
+    def __init__(self, ds_oid: str, ds_name: str, ds_label: str | None = None, ds_columns: list[Column] | None = None):
         self.oid = ds_oid
         self.name = ds_name
         self.label = ds_label
@@ -59,7 +58,8 @@ class ReadDatasetJason:
         with open(filepath, 'r') as f:
             return json.load(f)
 
-    def create_dataset(self, ds_oid: str, ds_name: str, ds_label: str | None = None):
+    @staticmethod
+    def create_dataset(ds_oid: str, ds_name: str, ds_label: str | None = None):
         return Dataset(ds_oid, ds_name, ds_label)
 
     def create_datasets(self):
@@ -116,8 +116,8 @@ class ReadDatasetJason:
             v.label = dataset.get_column(k).label
 
             if define is not None:
-                format = define.get_column(dataset.name, k).format
-                if format is not None:
+                fmt = define.get_column(dataset.name, k).format
+                if fmt is not None:
                     v.format = define.get_column(dataset.name, k).format
 
         with open(os.path.join(dest, dataset.name.lower() + '.xpt'), 'wb') as f:
@@ -147,7 +147,8 @@ class ParseDefine:
     def get_namespace(self):
         return {k if k is not None else 'default': v for k, v in self.root.nsmap.items()}
 
-    def create_dataset(self, ds_oid: str, ds_name: str, ds_label: str | None = None):
+    @staticmethod
+    def create_dataset(ds_oid: str, ds_name: str, ds_label: str | None = None):
         return Dataset(ds_oid, ds_name, ds_label)
 
     def create_datasets(self):
