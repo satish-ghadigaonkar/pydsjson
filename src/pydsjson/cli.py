@@ -1,5 +1,4 @@
 import pathlib
-
 import click
 import configparser
 import warnings
@@ -10,13 +9,13 @@ for name, logger in logging.root.manager.loggerDict.items():
     logger.disabled = True
 
 
-def get_files(infiles, file_types='*.json'):
+def get_files(infiles: tuple[pathlib.Path], file_types='*.json'):
     files = list()
     for infile in infiles:
         if infile.is_dir():
-            files.extend(infile.glob(file_types))
+            files.extend(infile.expanduser().glob(file_types))
         elif infile.is_file():
-            files.append(infile)
+            files.append(infile.expanduser())
 
     return files
 
@@ -52,7 +51,7 @@ def dataset_json(ctx, config=None, define=None):
 
 @dataset_json.command()
 @click.argument('infiles', nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
-@click.argument('output_folder', type=click.Path(exists=True))
+@click.argument('output_folder', type=click.Path(exists=True, path_type=pathlib.Path, file_okay=False, writable=True))
 @click.pass_context
 def json_to_csv(ctx, infiles, output_folder):
     """Converts Dataset JSON to CSV
@@ -72,7 +71,7 @@ def json_to_csv(ctx, infiles, output_folder):
 
 @dataset_json.command()
 @click.argument('infiles', nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
-@click.argument('output_folder', type=click.Path(exists=True))
+@click.argument('output_folder', type=click.Path(exists=True, dir_okay=True, writable=True))
 @click.pass_context
 def json_to_xpt(ctx, infiles, output_folder):
     for f in get_files(infiles):
@@ -87,7 +86,7 @@ def json_to_xpt(ctx, infiles, output_folder):
 
 @dataset_json.command()
 @click.argument('infiles', nargs=-1, type=click.Path(exists=True, path_type=pathlib.Path))
-@click.argument('output_folder', type=click.Path(exists=True))
+@click.argument('output_folder', type=click.Path(exists=True, dir_okay=True, writable=True))
 @click.pass_context
 def xpt_to_json(ctx, infiles, output_folder):
     for f in get_files(infiles):
