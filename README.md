@@ -1,9 +1,4 @@
 # pydsjson
-
-This repository should be used for the *Project/Workshop/Hackathon XY* to contain code, minutes, notes, outcomes,
-discussions and more. It is meant to allow anyone working with the results and discussions to allow flexible
-collaboration and follow up projects.
-
 ## Description
 
 The main purpose of *pydsjson* is to provide utilities for seamless conversion between Dataset-JSON and other data
@@ -24,7 +19,7 @@ python -m pip install https://github.com/satish-ghadigaonkar/pydsjson
 ````Python
 import pydsjson.dsjson
 
-ds = pydsjson.dsjson.ReadDatasetJason(filepath=r".\examples\source\adlbc.json", 
+ds = pydsjson.dsjson.ReadDatasetJason(filepath=r".\examples\source\adlbc.json",
                                       item_group_prefix="")
 
 # Covert to Pandas dataframe
@@ -40,16 +35,34 @@ ds.to_csv(dest=r".\examples\output", ds_name="ADLBC")
 ````
 
 ### Command-line Usage
+
 ````PowerShell
 # Get help on command-line usage
 dsjson --help
 
 # Covert to XPT
-dsjson --config ".\examples\source\prefixes.cfg" --define ".\examples\source\define.xml" to-xpt 
+dsjson --config ".\examples\source\prefixes.cfg" --define ".\examples\source\define.xml" json-to-xpt ".\examples\source\ad*.json" ".\examples\output"
+
+# Covert to CSV
+dsjson --config ".\examples ".\examples\source\define.xml" json-to-csv ".\examples\source\adlbc.json" ".\examples\output"
 
 ````
 
-![Image Description](./images/placeholder.png)
+## Covert from XPT to Dataset-JSON
+````Python
+import pydsjson.dsjson
+
+pdefine = pydsjson.dsjson.ParseDefine(r".\examples\source\define.xml")
+
+pydsjson.dsjson.write_dataset_json(xptpath=r".\examples\source\adlbc.xpt", study_oid=pdefine.study_oid,
+                                   metadata_version_oid=pdefine.metadata_version_oid,
+                                   output_folder=r".\examples\output", item_group_prefix="", item_prefix="IT")
+
+````
+### Command-line Usage
+````PowerShell
+dsjson --config ".\examples\source\prefixes.cfg" --define ".\examples\source\define.xml" xpt-to-json ".\examples\source\ad*.xpt" ".\examples\output"
+````
 
 ## Contribution
 
