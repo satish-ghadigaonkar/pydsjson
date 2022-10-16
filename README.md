@@ -8,7 +8,7 @@ You can also use `pydsjson` module as command-line tool.
 
 ## Installation
 
-This project requires Python v3.8+. Currently, the development version can be installed from GitHub.
+This project requires Python v3.8+. Currently, the under development version can be installed from GitHub.
 
 ```Shell
 python -m pip install https://github.com/satish-ghadigaonkar/pydsjson
@@ -63,6 +63,11 @@ pydsjson.dsjson.write_dataset_json(xptpath=r".\examples\source\adlbc.xpt", study
 ````PowerShell
 dsjson --config ".\examples\source\prefixes.cfg" --define ".\examples\source\define.xml" xpt-to-json ".\examples\source\ad*.xpt" ".\examples\output"
 ````
+
+## Coming Soon
+- Convert Dataset-JSON to R dataframe
+- Covert CSV to Dataset-JSON
+- Convert R dataframe to Dataset-JSON
 
 ## Contribution
 
